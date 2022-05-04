@@ -24,6 +24,7 @@ void spinReels();
 void calcRes();
 void printRes();
 void reset();
+void quit();
 
 int servoPin = 5;
 
@@ -102,8 +103,9 @@ void loop() {
         spinReels();
         calcRes();
         printRes();
-    } else if (rstBtnVal == LOW) {
         reset();
+    } else if (rstBtnVal == LOW) {
+        quit();
     }
         
 }
@@ -299,24 +301,25 @@ void rollReels() {
 
     for (i=0; i<3; i++) {
         randomPos[i] = rand() % 10;
-        Serial.println(randomPos[i]);
+//        Serial.println(randomPos[i]);
     }
-    Serial.println();
-    delay(100);
+//    Serial.println();
+//    delay(100);
 }
 
 void spinReels() {
-    doSteps1(0, 600, 2);
+    doSteps1(0, 1000, 2);
 //    delay(100);
     doSteps1(0, 20 * randomPos[0], 2);
 //    delay(100);
-    doSteps2(0, 600, 2);
+    doSteps2(0, 1000, 2);
 //    delay(100);
     doSteps2(0, 20 * randomPos[1], 2);
 //    delay(100);
-    doSteps3(0, 600, 2);
+    doSteps3(0, 1000, 2);
 //    delay(100);
     doSteps3(0, 20 * randomPos[2], 2);
+//    delay(100);    
     delay(100);
 }
 
@@ -325,55 +328,57 @@ void calcRes() {
     
     for (i=0; i<3; i++) {
         pos[i] = (pos[i] + randomPos[i]) % 10;
-        Serial.println(pos[i]);
+//        Serial.println(pos[i]);
     }
-    Serial.println();
-    delay(100);
+//    Serial.println();
+//    delay(100);
 
-    //게임 결과 if문 -> reward = 0, 1, 2, 3
-    // A B C D G 7 A B C D
-    // 0 1 2 3 4 5 6 7 8 9
-    if (pos[0]==pos[1]==pos[2]==5) {  //jackpot
+//    게임 결과 if문 -> reward = 0, 1, 2, 3
+//    A B C D G 7 A B C D
+//    0 1 2 3 4 5 6 7 8 9
+
+    if (pos[0]==pos[1]==pos[2]==5) {  //7-jackpot
         reward = 0;
-    } else if (pos[0]==pos[1]==pos[2]==4) {  //again
+    } else if (pos[0]==pos[1]==pos[2]==4) {  //G - roll again
+        reward = 1;
+    } else if ((pos[0]==0||pos[0]==6) && (pos[1]==0||pos[1]==6) && (pos[2]==0||pos[2]==6)) {  //A
         reward = 2;
-    } else if ((pos[0]==0||pos[0]==6) && (pos[1]==0||pos[1]==6) && (pos[2]==0||pos[2]==6)) {
-        reward = 1;
-    } else if ((pos[0]==1||pos[0]==7) && (pos[1]==1||pos[1]==7) && (pos[2]==1||pos[2]==7)) {
-        reward = 1;
-    } else if ((pos[0]==2||pos[0]==8) && (pos[1]==2||pos[1]==8) && (pos[2]==2||pos[2]==8)) {
-        reward = 1;
-    } else if ((pos[0]==3||pos[0]==9) && (pos[1]==3||pos[1]==9) && (pos[2]==3||pos[2]==9)) {
-        reward = 1;
+    } else if ((pos[0]==1||pos[0]==7) && (pos[1]==1||pos[1]==7) && (pos[2]==1||pos[2]==7)) {  //B
+        reward = 2;
+    } else if ((pos[0]==2||pos[0]==8) && (pos[1]==2||pos[1]==8) && (pos[2]==2||pos[2]==8)) {  //C
+        reward = 2;
+    } else if ((pos[0]==3||pos[0]==9) && (pos[1]==3||pos[1]==9) && (pos[2]==3||pos[2]==9)) {  //D
+        reward = 2;
     } else {
         reward = 3;  //lose
     }
 }
 
 void printRes() {
-//    switch(reward) {
-//        case 0:
-//            dispenser.write(40);
-//            delay(500);
-//            dispenser.write(140);
-//            delay(500);
-//            break;
-//            
-//        case 1:
-//            dispenser.write(40);
-//            delay(100);
-//            dispenser.write(140);
-//            delay(100);
-//            break;
-//            
-//        case 2:
-//        //다시 돌려야 하는데 어케 하냐
-//            break;
-//            
-//        default:
-//            break;
-//    }
-//    reward = 0;
+    switch(reward) {
+        case 0:  //win
+            dispenser.write(40);
+            delay(800);
+            dispenser.write(140);
+            delay(800);
+            break;
+            
+        case 1:  //again
+            //다시 돌려야 하는데 어케 하냐
+            srtBtnVal = LOW;
+            break;
+            
+        case 2:  //3 same
+            dispenser.write(40);
+            delay(400);
+            dispenser.write(140);
+            delay(400);
+            break;
+            
+        default:  //lose
+            break;
+    }
+    reward = 0;
 }
 
 void colorWipe(uint32_t c, uint8_t wait){
@@ -382,4 +387,12 @@ void colorWipe(uint32_t c, uint8_t wait){
     strip.show();
     delay(wait);
   }
+}
+
+void reset() {
+    
+}
+
+void quit() {
+    
 }
