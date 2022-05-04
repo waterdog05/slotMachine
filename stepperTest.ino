@@ -6,37 +6,37 @@
 
 #define PIN 6
 #define NUMPIXELS 20
-#define BRIGHTNESS 180  //0~225
+#define BRIGHTNESS 80  //0~225
 
 Servo dispenser;
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(NUMPIXELS, PIN, NEO_GRB + NEO_KHZ800);
 
-void aStep1(int s1);
+void aStep1(int s1);  //one step for stepper motor
 void aStep2(int s2);
 void aStep3(int s3);
 
-void rstStep1(int s1);
+void rstStep1(int s1);  //one step for reset
 void rstStep2(int s2);
 void rstStep3(int s3);
 
-void doStep1(bool dir, int nSteps, int del);
+void doStep1(bool dir, int nSteps, int del);  //spin motor
 void doStep2(bool dir, int nSteps, int del);
 void doStep3(bool dir, int nSteps, int del);
 
-void rstDoStep1(bool dir, int nSteps, int del);
+void rstDoStep1(bool dir, int nSteps, int del);  //reset motor
 void rstDoStep2(bool dir, int nSteps, int del);
 void rstDoStep3(bool dir, int nSteps, int del);
 
-void rollReels();
-void spinReels();
-void calcRes();
-void printRes();
-void quit();
+void rollReels();  //create random position
+void spinReels();  //spin reels
+void calcRes();  //calculate result
+void printRes();  //led + candy
+void quit();  //before turning off
 
 int servoPin = 5;
 
 const int srtBtn = 10;  //start button
-const int quitBtn = 11;  //reset button
+const int quitBtn = 11;  //quit button
 int srtBtnVal;
 int quitBtnVal;
 
@@ -44,23 +44,23 @@ int stepPin1[4] = {38, 39, 40, 41};
 int stepPin2[4] = {44, 45, 46, 47};
 int stepPin3[4] = {50, 51, 52, 53};
 
-int pos[3] = {0, 0, 0};
-int randomPos[3] = {0, 0, 0};
+int pos[3] = {0, 0, 0};  //reels position
+int randomPos[3] = {0, 0, 0};  //create random position
 
-int reward = 0;
+int reward = 4;  //4(lose) as default
 
 void setup() {
     // put your setup code here, to run once:
-    Serial.begin(9600);
-
+//    Serial.begin(9600);
     randomSeed(analogRead(0));
+    
     dispenser.attach(servoPin);
 
     strip.setBrightness(BRIGHTNESS);
     strip.begin();
     strip.show();
 
-    pinMode(srtBtn, INPUT_PULLUP);
+    pinMode(srtBtn, INPUT_PULLUP);  //HIGH as default
     pinMode(quitBtn, INPUT_PULLUP);
     
     pinMode(stepPin1[0], OUTPUT);
@@ -84,17 +84,17 @@ void setup() {
 void loop() {
     // put your main code here, to run repeatedly:
     strip.begin();
-//    strip.setPixelColor(소자 번호, R, G, B);
+//    strip.setPixelColor(소자 번호, R, G, B);  마지막 디자인때 수정
     
     srtBtnVal = digitalRead(srtBtn);
     quitBtnVal = digitalRead(quitBtn);
-    delay(100);
+//    delay(100);
 
-    colorWipe(strip.Color(255,0,0),50);
-    delay(1000);
+    colorWipe(strip.Color(255,0,0),50);  //adjust delay later
+    delay(500);
     colorWipe(strip.Color(0,255,0),50);
-    delay(1000);
-//    colorWipe(strip.Color(0,0,255),50);
+    delay(500);
+//    colorWipe(strip.Color(0,0,255),50);  //adjust design later
 //    delay(1000);
 //    colorWipe(strip.Color(255,255,255),50);
 //    delay(1000);
@@ -111,9 +111,10 @@ void loop() {
         spinReels();
         calcRes();
         printRes();
+        
         reward = 4;
     } else if (quitBtnVal == LOW) {
-        quit();
+        quit();  //종료 전 반드시 누르기. 안하면 고장남...
     }
 }
 
@@ -282,7 +283,7 @@ void aStep3(int s3) {  //1 motor move
     }
 }
 
-void rstStep1(int s1) {  //1 motor move
+void rstStep1(int s1) {  //1 motor move for reset
     switch(s1) {
         case 0:
             digitalWrite(stepPin1[0], LOW);
@@ -317,7 +318,7 @@ void rstStep1(int s1) {  //1 motor move
     }
 }
 
-void rstStep2(int s2) {  //1 motor move
+void rstStep2(int s2) {  //1 motor move for reset
     switch(s2) {
         case 0:
             digitalWrite(stepPin2[0], LOW);
@@ -352,7 +353,7 @@ void rstStep2(int s2) {  //1 motor move
     }
 }
 
-void rstStep3(int s3) {  //1 motor move
+void rstStep3(int s3) {  //1 motor move for reset
     switch(s3) {
         case 0:
             digitalWrite(stepPin3[0], LOW);
@@ -387,7 +388,7 @@ void rstStep3(int s3) {  //1 motor move
     }
 }
 
-void doSteps1(bool dir, int nSteps, int del){
+void doSteps1(bool dir, int nSteps, int del){  //for spin
   for( int i = 0; i < nSteps; i++ ){
     aStep1((dir?(nSteps-i-1):i)%4);
     delay(del);
@@ -408,7 +409,7 @@ void doSteps3(bool dir, int nSteps, int del){
   }
 }
 
-void rstDoSteps1(bool dir, int nSteps, int del){
+void rstDoSteps1(bool dir, int nSteps, int del){  //for reset
   for( int i = 0; i < nSteps; i++ ){
     rstStep1((dir?(nSteps-i-1):i)%4);
     delay(del);
@@ -441,19 +442,19 @@ void rollReels() {
 }
 
 void spinReels() {
-    doSteps1(0, 1000, 2);
+    doSteps1(0, 1000, 2);  //spin 5 time
 //    delay(100);
-    doSteps1(0, 20 * randomPos[0], 2);
+    doSteps1(0, 20 * randomPos[0], 2);  //spin random 0
 //    delay(100);
-    doSteps2(0, 1000, 2);
+    doSteps2(0, 1000, 2);  //spin 5 time
 //    delay(100);
-    doSteps2(0, 20 * randomPos[1], 2);
+    doSteps2(0, 20 * randomPos[1], 2);  //spin random 1
 //    delay(100);
-    doSteps3(0, 1000, 2);
+    doSteps3(0, 1000, 2);  //spin 5 time
 //    delay(100);
-    doSteps3(0, 20 * randomPos[2], 2);
+    doSteps3(0, 20 * randomPos[2], 2);  //spin random 2
 //    delay(100);    
-    delay(100);
+    delay(100);  //adjust later
 }
 
 void calcRes() {
@@ -470,20 +471,20 @@ void calcRes() {
 //    A B C D G 7 A B C D
 //    0 1 2 3 4 5 6 7 8 9
 
-    if (pos[0]==pos[1]==pos[2]==5) {  //7-jackpot
+    if (pos[0]==pos[1]==pos[2]==5) {  //7-jackpot  0.1%
         reward = 0;
-    } else if (pos[0]==pos[1]==pos[2]==4) {  //G - roll again
+    } else if (pos[0]==pos[1]==pos[2]==4) {  //G - roll again  0.1%
         reward = 1;
-    } else if ((pos[0]==0||pos[0]==6) && (pos[1]==0||pos[1]==6) && (pos[2]==0||pos[2]==6)) {  //A
+    } else if ((pos[0]==0||pos[0]==6) && (pos[1]==0||pos[1]==6) && (pos[2]==0||pos[2]==6)) {  //A  4.7%
         reward = 2;
-    } else if ((pos[0]==1||pos[0]==7) && (pos[1]==1||pos[1]==7) && (pos[2]==1||pos[2]==7)) {  //B
+    } else if ((pos[0]==1||pos[0]==7) && (pos[1]==1||pos[1]==7) && (pos[2]==1||pos[2]==7)) {  //B  4.7%
         reward = 2;
-    } else if ((pos[0]==2||pos[0]==8) && (pos[1]==2||pos[1]==8) && (pos[2]==2||pos[2]==8)) {  //C
+    } else if ((pos[0]==2||pos[0]==8) && (pos[1]==2||pos[1]==8) && (pos[2]==2||pos[2]==8)) {  //C  4.7%
         reward = 2;
-    } else if ((pos[0]==3||pos[0]==9) && (pos[1]==3||pos[1]==9) && (pos[2]==3||pos[2]==9)) {  //D
+    } else if ((pos[0]==3||pos[0]==9) && (pos[1]==3||pos[1]==9) && (pos[2]==3||pos[2]==9)) {  //D  4.7%
         reward = 2;
     } else {
-        reward = 3;  //lose
+        reward = 3;  //lose  81%
     }
 }
 
@@ -502,10 +503,11 @@ void printRes() {
             delay(750);
             colorWipe(strip.Color(0,255,0),50);
             delay(750);
+            delay(1000);  //adjust later
             break;
             
         case 1:  //again
-            //다시 돌려야 하는데 어케 하냐 테스트 해보고 안되면 걍 바꿔
+            //다시 돌려야 하는데 어케 하냐? 테스트 해보고 안되면 걍 바꿔
             colorWipe(strip.Color(255,0,0),50);
             delay(750);
             colorWipe(strip.Color(0,255,0),50);
@@ -539,7 +541,11 @@ void colorWipe(uint32_t c, uint8_t wait){
 
 void quit() {    
     int i;
-    
+
+//    for (i=0; i<3; i++) {
+//        pos[i] = (pos[i] + randomPos[i]) % 10;
+//    }
+
     rstDoSteps1(1, 20 * pos[0], 2);
     rstDoSteps2(1, 20 * pos[1], 2);
     rstDoSteps3(1, 20 * pos[2], 2);
@@ -547,6 +553,12 @@ void quit() {
     for (i=0; i<3; i++) {
         randomPos[i] = 0;
         pos[i] = 0;
+
+//        Serial.print("random : ");
+//        Serial.println(randomPos[i]);
+//        Serial.print("pos : ");
+//        Serial.println(pos[i]);
+//        Serial.println();
     }
     
     reward = 4;
