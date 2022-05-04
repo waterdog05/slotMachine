@@ -1,8 +1,15 @@
 #include <stdlib.h>
 #include <time.h>
 #include <Servo.h>
+#include <Adafruit_NeoPixel.h>
+#include <avr/power.h>
+
+#define PIN 6
+#define NUMPIXELS 20
+#define BRIGHTNESS 180  //0~225
 
 Servo dispenser;
+Adafruit_NeoPixel strip = Adafruit_NeoPixel(NUMPIXELS, PIN, NEO_GRB + NEO_KHZ800);
 
 void aStep1(int s1);
 void aStep2(int s2);
@@ -16,10 +23,9 @@ void rollReels();
 void spinReels();
 void calcRes();
 void printRes();
+void reset();
 
 int servoPin = 5;
-int Led1 = 6;
-int Led2 = 7;
 
 const int srtBtn = 10;  //start button
 const int rstBtn = 11;  //reset button
@@ -42,9 +48,10 @@ void setup() {
     randomSeed(analogRead(0));
     dispenser.attach(servoPin);
 
-    pinMode(Led1, OUTPUT);
-    pinMode(Led2, OUTPUT);
-    
+    strip.setBrightness(BRIGHTNESS);
+    strip.begin();
+    strip.show();
+
     pinMode(srtBtn, INPUT_PULLUP);
     pinMode(rstBtn, INPUT_PULLUP);
     
@@ -68,15 +75,27 @@ void setup() {
 
 void loop() {
     // put your main code here, to run repeatedly:
+    strip.begin();
+//    strip.setPixelColor(소자 번호, R, G, B);
+    
     srtBtnVal = digitalRead(srtBtn);
     rstBtnVal = digitalRead(rstBtn);
 
-    Serial.print("start : ");
-    Serial.println(srtBtnVal);
-    Serial.print("reset : ");
-    Serial.println(rstBtnVal);
-    Serial.println();
-    delay(100);
+    colorWipe(strip.Color(255,0,0),50);
+    delay(1000);
+    colorWipe(strip.Color(0,255,0),50);
+    delay(1000);
+//    colorWipe(strip.Color(0,0,255),50);
+//    delay(1000);
+//    colorWipe(strip.Color(255,255,255),50);
+//    delay(1000);
+
+//    Serial.print("start : ");
+//    Serial.println(srtBtnVal);
+//    Serial.print("reset : ");
+//    Serial.println(rstBtnVal);
+//    Serial.println();
+//    delay(100);
 
     if (srtBtnVal == LOW) {
         rollReels();
@@ -84,12 +103,12 @@ void loop() {
         calcRes();
         printRes();
     } else if (rstBtnVal == LOW) {
-//        reset();
+        reset();
     }
         
 }
 
-void aStep1(int s1) {
+void aStep1(int s1) {  //3 motors move
     switch(s1) {
         case 0:
             digitalWrite(stepPin1[0], LOW);
@@ -164,7 +183,7 @@ void aStep1(int s1) {
     }
 }
 
-void aStep2(int s2) {
+void aStep2(int s2) {  //2 motors move
     switch(s2) {
         case 0:
             digitalWrite(stepPin2[0], LOW);
@@ -219,7 +238,7 @@ void aStep2(int s2) {
     }
 }
 
-void aStep3(int s3) {
+void aStep3(int s3) {  //1 motor move
     switch(s3) {
         case 0:
             digitalWrite(stepPin3[0], LOW);
@@ -357,16 +376,10 @@ void printRes() {
 //    reward = 0;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+void colorWipe(uint32_t c, uint8_t wait){
+  for(uint16_t i=0; i<strip.numPixels(); i++){
+    strip.setPixelColor(i,c);
+    strip.show();
+    delay(wait);
+  }
+}
