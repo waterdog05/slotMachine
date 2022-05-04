@@ -79,8 +79,6 @@ void setup() {
     pinMode(stepPin3[3], OUTPUT);
 }
 
-
-
 void loop() {
     // put your main code here, to run repeatedly:
     strip.begin();
