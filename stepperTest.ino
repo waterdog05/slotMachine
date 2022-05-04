@@ -31,7 +31,6 @@ void rollReels();
 void spinReels();
 void calcRes();
 void printRes();
-void reset();
 void quit();
 
 int servoPin = 5;
@@ -112,7 +111,7 @@ void loop() {
         spinReels();
         calcRes();
         printRes();
-        reset();
+        reward = 4;
     } else if (quitBtnVal == LOW) {
         quit();
     }
@@ -538,15 +537,17 @@ void colorWipe(uint32_t c, uint8_t wait){
     }
 }
 
-void reset() {
+void quit() {    
     int i;
-    reward = 4;
+    
+    rstDoSteps1(1, 20 * pos[0], 2);
+    rstDoSteps2(1, 20 * pos[1], 2);
+    rstDoSteps3(1, 20 * pos[2], 2);
 
     for (i=0; i<3; i++) {
         randomPos[i] = 0;
+        pos[i] = 0;
     }
-}
-
-void quit() {
     
+    reward = 4;
 }
