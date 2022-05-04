@@ -15,9 +15,17 @@ void aStep1(int s1);
 void aStep2(int s2);
 void aStep3(int s3);
 
+void rstStep1(int s1);
+void rstStep2(int s2);
+void rstStep3(int s3);
+
 void doStep1(bool dir, int nSteps, int del);
 void doStep2(bool dir, int nSteps, int del);
 void doStep3(bool dir, int nSteps, int del);
+
+void rstDoStep1(bool dir, int nSteps, int del);
+void rstDoStep2(bool dir, int nSteps, int del);
+void rstDoStep3(bool dir, int nSteps, int del);
 
 void rollReels();
 void spinReels();
@@ -29,9 +37,9 @@ void quit();
 int servoPin = 5;
 
 const int srtBtn = 10;  //start button
-const int rstBtn = 11;  //reset button
+const int quitBtn = 11;  //reset button
 int srtBtnVal;
-int rstBtnVal;
+int quitBtnVal;
 
 int stepPin1[4] = {38, 39, 40, 41};
 int stepPin2[4] = {44, 45, 46, 47};
@@ -54,7 +62,7 @@ void setup() {
     strip.show();
 
     pinMode(srtBtn, INPUT_PULLUP);
-    pinMode(rstBtn, INPUT_PULLUP);
+    pinMode(quitBtn, INPUT_PULLUP);
     
     pinMode(stepPin1[0], OUTPUT);
     pinMode(stepPin1[1], OUTPUT);
@@ -80,7 +88,8 @@ void loop() {
 //    strip.setPixelColor(소자 번호, R, G, B);
     
     srtBtnVal = digitalRead(srtBtn);
-    rstBtnVal = digitalRead(rstBtn);
+    quitBtnVal = digitalRead(quitBtn);
+    delay(100);
 
     colorWipe(strip.Color(255,0,0),50);
     delay(1000);
@@ -104,10 +113,9 @@ void loop() {
         calcRes();
         printRes();
         reset();
-    } else if (rstBtnVal == LOW) {
+    } else if (quitBtnVal == LOW) {
         quit();
     }
-        
 }
 
 void aStep1(int s1) {  //3 motors move
@@ -275,6 +283,111 @@ void aStep3(int s3) {  //1 motor move
     }
 }
 
+void rstStep1(int s1) {  //1 motor move
+    switch(s1) {
+        case 0:
+            digitalWrite(stepPin1[0], LOW);
+            digitalWrite(stepPin1[1], HIGH);
+            digitalWrite(stepPin1[2], HIGH);
+            digitalWrite(stepPin1[3], LOW);
+            break;
+
+        case 1:
+            digitalWrite(stepPin1[0], LOW);
+            digitalWrite(stepPin1[1], HIGH);
+            digitalWrite(stepPin1[2], LOW);
+            digitalWrite(stepPin1[3], HIGH);
+            break;
+
+        case 2:
+            digitalWrite(stepPin1[0], HIGH);
+            digitalWrite(stepPin1[1], LOW);
+            digitalWrite(stepPin1[2], LOW);
+            digitalWrite(stepPin1[3], HIGH);
+            break;
+
+        case 3:
+            digitalWrite(stepPin1[0], HIGH);
+            digitalWrite(stepPin1[1], LOW);
+            digitalWrite(stepPin1[2], HIGH);
+            digitalWrite(stepPin1[3], LOW);
+            break;
+
+        default:
+            break;
+    }
+}
+
+void rstStep2(int s2) {  //1 motor move
+    switch(s2) {
+        case 0:
+            digitalWrite(stepPin2[0], LOW);
+            digitalWrite(stepPin2[1], HIGH);
+            digitalWrite(stepPin2[2], HIGH);
+            digitalWrite(stepPin2[3], LOW);
+            break;
+
+        case 1:
+            digitalWrite(stepPin2[0], LOW);
+            digitalWrite(stepPin2[1], HIGH);
+            digitalWrite(stepPin2[2], LOW);
+            digitalWrite(stepPin2[3], HIGH);
+            break;
+
+        case 2:
+            digitalWrite(stepPin2[0], HIGH);
+            digitalWrite(stepPin2[1], LOW);
+            digitalWrite(stepPin2[2], LOW);
+            digitalWrite(stepPin2[3], HIGH);
+            break;
+
+        case 3:
+            digitalWrite(stepPin2[0], HIGH);
+            digitalWrite(stepPin2[1], LOW);
+            digitalWrite(stepPin2[2], HIGH);
+            digitalWrite(stepPin2[3], LOW);
+            break;
+
+        default:
+            break;
+    }
+}
+
+void rstStep3(int s3) {  //1 motor move
+    switch(s3) {
+        case 0:
+            digitalWrite(stepPin3[0], LOW);
+            digitalWrite(stepPin3[1], HIGH);
+            digitalWrite(stepPin3[2], HIGH);
+            digitalWrite(stepPin3[3], LOW);
+            break;
+
+        case 1:
+            digitalWrite(stepPin3[0], LOW);
+            digitalWrite(stepPin3[1], HIGH);
+            digitalWrite(stepPin3[2], LOW);
+            digitalWrite(stepPin3[3], HIGH);
+            break;
+
+        case 2:
+            digitalWrite(stepPin3[0], HIGH);
+            digitalWrite(stepPin3[1], LOW);
+            digitalWrite(stepPin3[2], LOW);
+            digitalWrite(stepPin3[3], HIGH);
+            break;
+
+        case 3:
+            digitalWrite(stepPin3[0], HIGH);
+            digitalWrite(stepPin3[1], LOW);
+            digitalWrite(stepPin3[2], HIGH);
+            digitalWrite(stepPin3[3], LOW);
+            break;
+
+        default:
+            break;
+    }
+}
+
 void doSteps1(bool dir, int nSteps, int del){
   for( int i = 0; i < nSteps; i++ ){
     aStep1((dir?(nSteps-i-1):i)%4);
@@ -292,6 +405,27 @@ void doSteps2(bool dir, int nSteps, int del){
 void doSteps3(bool dir, int nSteps, int del){
   for( int i = 0; i < nSteps; i++ ){
     aStep3((dir?(nSteps-i-1):i)%4);
+    delay(del);
+  }
+}
+
+void rstDoSteps1(bool dir, int nSteps, int del){
+  for( int i = 0; i < nSteps; i++ ){
+    rstStep1((dir?(nSteps-i-1):i)%4);
+    delay(del);
+  }
+}
+
+void rstDoSteps2(bool dir, int nSteps, int del){
+  for( int i = 0; i < nSteps; i++ ){
+    rstStep2((dir?(nSteps-i-1):i)%4);
+    delay(del);
+  }
+}
+
+void rstDoSteps3(bool dir, int nSteps, int del){
+  for( int i = 0; i < nSteps; i++ ){
+    rstStep3((dir?(nSteps-i-1):i)%4);
     delay(del);
   }
 }
@@ -357,18 +491,32 @@ void calcRes() {
 void printRes() {
     switch(reward) {
         case 0:  //win
+            colorWipe(strip.Color(255,0,0),50);
+            delay(750);
+            colorWipe(strip.Color(0,255,0),50);
+            delay(750);
             dispenser.write(40);
             delay(800);
             dispenser.write(140);
             delay(800);
+            colorWipe(strip.Color(255,0,0),50);
+            delay(750);
+            colorWipe(strip.Color(0,255,0),50);
+            delay(750);
             break;
             
         case 1:  //again
-            //다시 돌려야 하는데 어케 하냐
+            //다시 돌려야 하는데 어케 하냐 테스트 해보고 안되면 걍 바꿔
+            colorWipe(strip.Color(255,0,0),50);
+            delay(750);
+            colorWipe(strip.Color(0,255,0),50);
+            delay(750);
             srtBtnVal = LOW;
             break;
             
         case 2:  //3 same
+            colorWipe(strip.Color(0,255,0),50);
+            delay(750);
             dispenser.write(40);
             delay(400);
             dispenser.write(140);
@@ -376,21 +524,27 @@ void printRes() {
             break;
             
         default:  //lose
+            colorWipe(strip.Color(255,0,0),50);
+            delay(750);
             break;
     }
-    reward = 0;
 }
 
 void colorWipe(uint32_t c, uint8_t wait){
-  for(uint16_t i=0; i<strip.numPixels(); i++){
-    strip.setPixelColor(i,c);
-    strip.show();
-    delay(wait);
-  }
+    for(uint16_t i=0; i<strip.numPixels(); i++){
+        strip.setPixelColor(i,c);
+        strip.show();
+        delay(wait);
+    }
 }
 
 void reset() {
-    
+    int i;
+    reward = 4;
+
+    for (i=0; i<3; i++) {
+        randomPos[i] = 0;
+    }
 }
 
 void quit() {
