@@ -4,12 +4,7 @@
 #include <Adafruit_NeoPixel.h>
 #include <avr/power.h>
 
-#define PIN 6
-#define NUMPIXELS 20
-#define BRIGHTNESS 80  //0~225
-
 Servo dispenser;
-Adafruit_NeoPixel strip = Adafruit_NeoPixel(NUMPIXELS, PIN, NEO_GRB + NEO_KHZ800);
 
 void aStep1(int s1);  //one step for stepper motor
 void aStep2(int s2);
@@ -56,10 +51,6 @@ void setup() {
     
     dispenser.attach(servoPin);
 
-    strip.setBrightness(BRIGHTNESS);
-    strip.begin();
-    strip.show();
-
     pinMode(srtBtn, INPUT_PULLUP);  //HIGH as default
     pinMode(quitBtn, INPUT_PULLUP);
     
@@ -81,21 +72,12 @@ void setup() {
 
 void loop() {
     // put your main code here, to run repeatedly:
-    strip.begin();
+//    strip.begin();
 //    strip.setPixelColor(소자 번호, R, G, B);  마지막 디자인때 수정
     
     srtBtnVal = digitalRead(srtBtn);
     quitBtnVal = digitalRead(quitBtn);
 //    delay(100);
-
-    colorWipe(strip.Color(255,0,0),50);  //adjust delay later
-    delay(500);
-    colorWipe(strip.Color(0,255,0),50);
-    delay(500);
-//    colorWipe(strip.Color(0,0,255),50);  //adjust design later
-//    delay(1000);
-//    colorWipe(strip.Color(255,255,255),50);
-//    delay(1000);
 
 //    Serial.print("start : ");
 //    Serial.println(srtBtnVal);
@@ -489,33 +471,19 @@ void calcRes() {
 void printRes() {
     switch(reward) {
         case 0:  //win
-            colorWipe(strip.Color(255,0,0),50);
-            delay(750);
-            colorWipe(strip.Color(0,255,0),50);
-            delay(750);
             dispenser.write(40);
             delay(800);
             dispenser.write(140);
             delay(800);
-            colorWipe(strip.Color(255,0,0),50);
-            delay(750);
-            colorWipe(strip.Color(0,255,0),50);
-            delay(750);
-            delay(1000);  //adjust later
+            delay(100);  //adjust later
             break;
             
         case 1:  //again
             //다시 돌려야 하는데 어케 하냐? 테스트 해보고 안되면 걍 바꿔
-            colorWipe(strip.Color(255,0,0),50);
-            delay(750);
-            colorWipe(strip.Color(0,255,0),50);
-            delay(750);
             srtBtnVal = LOW;
             break;
             
         case 2:  //3 same
-            colorWipe(strip.Color(0,255,0),50);
-            delay(750);
             dispenser.write(40);
             delay(400);
             dispenser.write(140);
@@ -523,17 +491,7 @@ void printRes() {
             break;
             
         default:  //lose
-            colorWipe(strip.Color(255,0,0),50);
-            delay(750);
             break;
-    }
-}
-
-void colorWipe(uint32_t c, uint8_t wait){
-    for(uint16_t i=0; i<strip.numPixels(); i++){
-        strip.setPixelColor(i,c);
-        strip.show();
-        delay(wait);
     }
 }
 
