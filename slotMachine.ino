@@ -1,8 +1,6 @@
 #include <stdlib.h>
 #include <time.h>
 #include <Servo.h>
-#include <Adafruit_NeoPixel.h>
-#include <avr/power.h>
 
 Servo dispenser;
 
