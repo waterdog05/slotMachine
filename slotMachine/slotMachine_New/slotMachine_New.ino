@@ -29,6 +29,8 @@ int sliderPin = 24;
 
 int res;  //game result
 
+int del = 900;
+
 const int stepPin1 = 2;  //stepper motor pin
 const int stepPin2 = 3;
 const int stepPin3 = 4;
@@ -117,70 +119,70 @@ void spinReels() {
         digitalWrite(stepPin1, HIGH);
         digitalWrite(stepPin2, HIGH);
         digitalWrite(stepPin3, HIGH);
-        delayMicroseconds(500);
+        delayMicroseconds(del);
         digitalWrite(stepPin1, LOW);
         digitalWrite(stepPin2, LOW);
         digitalWrite(stepPin3, LOW);
-        delayMicroseconds(500);
+        delayMicroseconds(del);
     }
 //    delay(500);
     for (int i=0; i<20*randomPos[0]; i++) {
         digitalWrite(stepPin1, HIGH);
         digitalWrite(stepPin2, HIGH);
         digitalWrite(stepPin3, HIGH);
-        delayMicroseconds(500);
+        delayMicroseconds(del);
         digitalWrite(stepPin1, LOW);
         digitalWrite(stepPin2, LOW);
         digitalWrite(stepPin3, LOW);
-        delayMicroseconds(500);
+        delayMicroseconds(del);
     }
 //    delay(500);
     for (int i=0; i<200-(20*randomPos[0]); i++) {
         digitalWrite(stepPin2, HIGH);
         digitalWrite(stepPin3, HIGH);
-        delayMicroseconds(500);
+        delayMicroseconds(del);
         digitalWrite(stepPin2, LOW);
         digitalWrite(stepPin3, LOW);
-        delayMicroseconds(500);
+        delayMicroseconds(del);
     }
 //    delay(500);
     for (int i=0; i<1000; i++) {
         digitalWrite(stepPin2, HIGH);
         digitalWrite(stepPin3, HIGH);
-        delayMicroseconds(500);
+        delayMicroseconds(del);
         digitalWrite(stepPin2, LOW);
         digitalWrite(stepPin3, LOW);
-        delayMicroseconds(500);
+        delayMicroseconds(del);
     }
 //    delay(500);
     for (int i=0; i<20*randomPos[1]; i++) {
         digitalWrite(stepPin2, HIGH);
         digitalWrite(stepPin3, HIGH);
-        delayMicroseconds(500);
+        delayMicroseconds(del);
         digitalWrite(stepPin2, LOW);
         digitalWrite(stepPin3, LOW);
-        delayMicroseconds(500);
+        delayMicroseconds(del);
     }
 //    delay(500);
     for (int i=0; i<200-(20*randomPos[1]); i++) {
         digitalWrite(stepPin3, HIGH);
-        delayMicroseconds(500);
+        delayMicroseconds(del);
         digitalWrite(stepPin3, LOW);
-        delayMicroseconds(500);
+        delayMicroseconds(del);
     }
 //    delay(500);
     for (int i=0; i<1000; i++) {
         digitalWrite(stepPin3, HIGH);
-        delayMicroseconds(500);
+        delayMicroseconds(del);
         digitalWrite(stepPin3, LOW);
-        delayMicroseconds(500);
+        delayMicroseconds(del);
     }
 //    delay(500);
     for (int i=0; i<20*randomPos[2]; i++) {
         digitalWrite(stepPin3, HIGH);
-        delayMicroseconds(500);
+        delayMicroseconds(del);
         digitalWrite(stepPin3, LOW);
-        delayMicroseconds(500);
+        delayMicroseconds(del);
     }
 }
 
@@ -193,7 +195,7 @@ void calcRes() {
     }
 
 //    character sequence
-//    A B C D G 7 A B C D
+//    A B C D 7 G A B C D
 //    0 1 2 3 4 5 6 7 8 9
     if (pos[0]==5 && pos[1]==5 && pos[2]==5) {  //7-jackpot  0.1%
         res = 0;
