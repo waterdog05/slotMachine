@@ -221,17 +221,17 @@ void printRes() {
         case 0:  //jackpot
             Serial.println("jackpot");
             myDFPlayer.play(4);
-            slider.write(20);
+            slider.write(30);
             delay(10000);
-            slider.write(90);
-            delay(2000);
+            slider.write(-30);
+            delay(1000);
             break;
             
         case 1:  //again
             //다시 돌려야 하는데 어케 하냐? 테스트 해보고 안되면 걍 바꿔
             Serial.println("again");
             myDFPlayer.play(2);
-            delay(2000);
+            delay(5000);
             randNum();
             spinReels();
             calcRes();
@@ -240,10 +240,11 @@ void printRes() {
             
         case 2:  //3 same
             Serial.println("same");  
-            myDFPlayer.play(3);         
-            slider.write(20);
+            myDFPlayer.play(3);  
             delay(1000);
-            slider.write(90);
+            slider.write(30);
+            delay(1000);
+            slider.write(-30);
             delay(1000);
             break;
 
